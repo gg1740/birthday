@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Birthday Gift 🎁💜</title>
   <style>
-    /*——————————————
-      DESKTOP/NORMAL STYLES
-    ——————————————*/
+    /*—————————————————————————————————————————————————————————————————
+      1) BASE “DESKTOP/NORMAL” STYLES (applies when body has .desktop or no class)
+    ——————————————————————————————————————————————————————————————————*/
     body {
       margin: 0;
       padding: 0;
-      height: 100vh;             /* desktop: fill one screen */
-      overflow: hidden;          /* desktop: no scroll needed */
+      height: 100vh;
+      overflow: hidden; /* hide scrollbars until gift is opened */
       background: linear-gradient(to right, #ffe6f0, #fff5f8);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
@@ -52,7 +52,7 @@
       z-index: 2;
     }
     .gift-box {
-      font-size: 180px;          /* desktop size */
+      font-size: 180px;          /* Normal desktop size */
       cursor: pointer;
       animation: wiggle 1.2s infinite ease-in-out;
       user-select: none;
@@ -71,8 +71,9 @@
       user-select: none;
     }
 
+    /* Keep message-area hidden until user clicks gift */
     .message-area {
-      display: none;
+      display: none; /* always start hidden */
       flex-direction: row;
       align-items: flex-start;
       justify-content: center;
@@ -81,7 +82,7 @@
       flex-wrap: wrap;
     }
     .message-area.show {
-      display: flex;
+      display: flex; /* only when JS adds .show */
     }
 
     .side-image {
@@ -129,7 +130,7 @@
       font-size: 0.9rem;
     }
 
-    /* Buttons (all devices) */
+    /* Buttons container (all devices) */
     .button-row {
       display: flex;
       gap: 1rem;
@@ -150,25 +151,29 @@
       transform: scale(1.05);
     }
 
-    /*——————————————
-      TABLET STYLES (body.tablet)
-    ——————————————*/
+    /*—————————————————————————————————————————————————————————————————
+      2) TABLET STYLES (body has .tablet)
+    ——————————————————————————————————————————————————————————————————*/
     body.tablet {
-      overflow-y: auto;       /* allow scroll if needed */
+      overflow-y: auto; /* allow scrolling if content overflows */
     }
     body.tablet .gift-box {
-      font-size: 14vw;        /* relative tablet size */
+      font-size: 14vw;   /* relative size on tablet */
       max-font-size: 180px;
     }
     body.tablet #clickText {
       font-size: 1.25rem;
     }
     body.tablet .message-area {
+      display: none;     /* still hidden until .show is added */
       flex-direction: row;
       gap: 1.5rem;
       margin-top: 2rem;
       width: 85vw;
       max-width: 1000px;
+    }
+    body.tablet .message-area.show {
+      display: flex;
     }
     body.tablet .side-image {
       width: 45vw;
@@ -187,13 +192,13 @@
       width: auto;
     }
 
-    /*——————————————
-      MOBILE STYLES (body.mobile)
-      “SMALL VERSION”
-    ——————————————*/
+    /*—————————————————————————————————————————————————————————————————
+      3) MOBILE STYLES (body has .mobile)
+      “SMALL VERSION” overrides
+    ——————————————————————————————————————————————————————————————————*/
     body.mobile {
-      height: auto;           /* allow page to grow */
-      overflow-y: auto;       /* always allow scrolling */
+      height: auto;           /* allow body to grow past one screen */
+      overflow-y: auto;       /* always allow vertical scrolling */
     }
     body.mobile .gift-box {
       font-size: 18vw;        /* smaller on phones */
@@ -203,14 +208,17 @@
       font-size: 1rem;
     }
     body.mobile .message-area {
-      display: flex;
-      flex-direction: column; 
+      display: none;          /* keep it hidden until .show is added */
+      flex-direction: column;
       align-items: center;
       gap: 1rem;
       margin-top: 2rem;
       width: 90vw;            /* almost full width */
       max-width: none;
-      overflow: visible;      /* ensure images/text aren’t hidden */
+      overflow: visible;      /* ensure content is not clipped */
+    }
+    body.mobile .message-area.show {
+      display: flex;
     }
     body.mobile .side-image {
       width: 80%;
@@ -273,7 +281,7 @@
   <audio id="bgMusic" src="happy-birthday.mp3" preload="auto"></audio>
 
   <script>
-    /** 1) Detect “Mobile” / “Tablet” / “Desktop” **/
+    // 1) Detect “Mobile” / “Tablet” / “Desktop”
     function getDeviceType() {
       const ua = navigator.userAgent;
       if (/Mobi|Android/i.test(ua)) {
@@ -285,6 +293,7 @@
       }
     }
 
+    // 2) On page load, add the appropriate class to <body>
     document.addEventListener("DOMContentLoaded", () => {
       const device = getDeviceType();
       if (device === "Mobile") {
@@ -297,7 +306,7 @@
       console.log("Detected device type:", device);
     });
 
-    /** 2) Floating hearts (same as before) **/
+    // 3) Floating hearts logic
     const heartContainer = document.querySelector(".heart-container");
     function createHeart() {
       const heart = document.createElement("div");
@@ -313,18 +322,19 @@
     }
     setInterval(createHeart, 300);
 
-    /** 3) “Open gift” logic **/
-    const giftBox = document.getElementById("giftBox");
-    const clickText = document.getElementById("clickText");
+    // 4) “Open gift” logic
+    const giftBox    = document.getElementById("giftBox");
+    const clickText  = document.getElementById("clickText");
     const messageArea = document.getElementById("messageArea");
-    const bgMusic = document.getElementById("bgMusic");
+    const bgMusic    = document.getElementById("bgMusic");
 
     giftBox.addEventListener("click", () => {
-      giftBox.style.display = "none";
-      clickText.style.display = "none";
+      giftBox.style.display    = "none";
+      clickText.style.display  = "none";
       messageArea.classList.add("show");
       bgMusic.play();
-      // On mobile/tablet, ensure vertical scroll is still enabled
+
+      // On mobile/tablet, ensure vertical scroll is enabled
       if (
         document.body.classList.contains("mobile") ||
         document.body.classList.contains("tablet")
@@ -333,9 +343,10 @@
       }
     });
 
-    /** 4) Back & Next button handlers **/
+    // 5) Back & Next button handlers
+
     document.getElementById("nextBtn").addEventListener("click", () => {
-      window.location.href = "home.html";  // change as needed
+      window.location.href = "next.html"; // change as needed
     });
   </script>
 </body>
