@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Birthday Gift 🎁💜</title>
   <style>
-    /*—————————————————————————————————————————————————————————————————
-      1) BASE “DESKTOP/NORMAL” STYLES (applies when body has .desktop or no class)
-    ——————————————————————————————————————————————————————————————————*/
+    /* ————————————————————————————————————————————————
+       1) BASE (Desktop / Normal) STYLES 
+       These apply when there is no .mobile or .tablet class on <body>.
+       ———————————————————————————————————————————————— */
     body {
       margin: 0;
       padding: 0;
       height: 100vh;
-      overflow: hidden; /* hide scrollbars until gift is opened */
+      overflow: hidden; /* desktop: no scroll until gift tapped */
       background: linear-gradient(to right, #ffe6f0, #fff5f8);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
@@ -52,7 +53,7 @@
       z-index: 2;
     }
     .gift-box {
-      font-size: 180px;          /* Normal desktop size */
+      font-size: 180px; /* desktop size */
       cursor: pointer;
       animation: wiggle 1.2s infinite ease-in-out;
       user-select: none;
@@ -71,9 +72,8 @@
       user-select: none;
     }
 
-    /* Keep message-area hidden until user clicks gift */
     .message-area {
-      display: none; /* always start hidden */
+      display: none; /* always hidden initially */
       flex-direction: row;
       align-items: flex-start;
       justify-content: center;
@@ -93,7 +93,7 @@
     }
 
     .message-container {
-      width: 800px;
+      width: 750px;
       background: white;
       border-radius: 20px;
       padding: 40px;
@@ -151,21 +151,24 @@
       transform: scale(1.05);
     }
 
-    /*—————————————————————————————————————————————————————————————————
-      2) TABLET STYLES (body has .tablet)
-    ——————————————————————————————————————————————————————————————————*/
+
+    /* ————————————————————————————————————————————————
+       2) TABLET STYLES (when <body> has class="tablet")
+       Scrollable from the start, but content still hidden until gift tapped.
+       ———————————————————————————————————————————————— */
     body.tablet {
-      overflow-y: auto; /* allow scrolling if content overflows */
+      height: auto;          /* allow page to expand */
+      overflow-y: auto;      /* allow vertical scrolling immediately */
     }
     body.tablet .gift-box {
-      font-size: 14vw;   /* relative size on tablet */
+      font-size: 14vw;       /* relative size on tablet */
       max-font-size: 180px;
     }
     body.tablet #clickText {
       font-size: 1.25rem;
     }
     body.tablet .message-area {
-      display: none;     /* still hidden until .show is added */
+      display: none;         /* stay hidden until .show */
       flex-direction: row;
       gap: 1.5rem;
       margin-top: 2rem;
@@ -192,30 +195,31 @@
       width: auto;
     }
 
-    /*—————————————————————————————————————————————————————————————————
-      3) MOBILE STYLES (body has .mobile)
-      “SMALL VERSION” overrides
-    ——————————————————————————————————————————————————————————————————*/
+
+    /* ————————————————————————————————————————————————
+       3) MOBILE STYLES (when <body> has class="mobile")
+       Stay hidden until tap; no scroll until tapped.
+       ———————————————————————————————————————————————— */
     body.mobile {
-      height: auto;           /* allow body to grow past one screen */
-      overflow-y: auto;       /* always allow vertical scrolling */
+      height: 100vh;         /* lock so only gift is initially visible */
+      overflow-y: hidden;    /* prevent scrolling until gift tapped */
     }
     body.mobile .gift-box {
-      font-size: 18vw;        /* smaller on phones */
+      font-size: 18vw;       /* smaller relative size on phones */
       max-font-size: 120px;
     }
     body.mobile #clickText {
       font-size: 1rem;
     }
     body.mobile .message-area {
-      display: none;          /* keep it hidden until .show is added */
+      display: none;         /* hidden until .show */
       flex-direction: column;
       align-items: center;
       gap: 1rem;
       margin-top: 2rem;
-      width: 90vw;            /* almost full width */
+      width: 90vw;           /* almost full width */
       max-width: none;
-      overflow: visible;      /* ensure content is not clipped */
+      overflow: visible;     /* ensure content not clipped */
     }
     body.mobile .message-area.show {
       display: flex;
@@ -232,10 +236,10 @@
       max-width: none;
     }
     body.mobile .message-container h1 {
-      font-size: 1.5rem;      /* smaller heading */
+      font-size: 1.5rem;     /* smaller heading */
     }
     body.mobile .message-container p {
-      font-size: 0.9rem;      /* smaller text */
+      font-size: 0.9rem;     /* smaller text */
     }
     body.mobile .signature {
       font-size: 0.8rem;
@@ -281,7 +285,7 @@
   <audio id="bgMusic" src="happy-birthday.mp3" preload="auto"></audio>
 
   <script>
-    // 1) Detect “Mobile” / “Tablet” / “Desktop”
+    /** 1) Detect device type: “Mobile”, “Tablet”, or “Desktop” **/
     function getDeviceType() {
       const ua = navigator.userAgent;
       if (/Mobi|Android/i.test(ua)) {
@@ -293,7 +297,7 @@
       }
     }
 
-    // 2) On page load, add the appropriate class to <body>
+    /** 2) On page load, add the appropriate class to <body> **/
     document.addEventListener("DOMContentLoaded", () => {
       const device = getDeviceType();
       if (device === "Mobile") {
@@ -306,7 +310,7 @@
       console.log("Detected device type:", device);
     });
 
-    // 3) Floating hearts logic
+    /** 3) Floating hearts logic (same as before) **/
     const heartContainer = document.querySelector(".heart-container");
     function createHeart() {
       const heart = document.createElement("div");
@@ -322,7 +326,7 @@
     }
     setInterval(createHeart, 300);
 
-    // 4) “Open gift” logic
+    /** 4) “Open gift” logic **/
     const giftBox    = document.getElementById("giftBox");
     const clickText  = document.getElementById("clickText");
     const messageArea = document.getElementById("messageArea");
@@ -334,16 +338,18 @@
       messageArea.classList.add("show");
       bgMusic.play();
 
-      // On mobile/tablet, ensure vertical scroll is enabled
+      // Once gift is tapped, allow scrolling on mobile/tablet by ensuring
+      // body overflow is set to auto and height is auto
       if (
         document.body.classList.contains("mobile") ||
         document.body.classList.contains("tablet")
       ) {
+        document.body.style.height = "auto";
         document.body.style.overflowY = "auto";
       }
     });
 
-    // 5) Back & Next button handlers
+    /** 5) Next button handlers **/
 
     document.getElementById("nextBtn").addEventListener("click", () => {
       window.location.href = "next.html"; // change as needed
