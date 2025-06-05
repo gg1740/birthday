@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Birthday Gift 🎁💜</title>
   <style>
-    /*———— Base Styles ————*/
-    html, body {
+    /*—————————————————————————————————————————————————————————————————
+      BASE “DESKTOP/NORMAL” STYLES (applies when body has .desktop or no class)
+      Will override further if .mobile or .tablet is present.
+    ——————————————————————————————————————————————————————————————————*/
+    body {
       margin: 0;
       padding: 0;
       height: 100vh;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden; /* hide scrollbars on desktop/normal */
       background: linear-gradient(to right, #ffe6f0, #fff5f8);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,7 +23,7 @@
       position: relative;
     }
 
-    /* Floating hearts container */
+    /* Floating hearts: same for all */
     .heart-container {
       position: fixed;
       top: 0; left: 0;
@@ -34,7 +37,6 @@
       color: purple;
       user-select: none;
       animation: floatUp linear forwards;
-      /* Initial size and speed will be set dynamically via JS */
     }
     @keyframes floatUp {
       0% {
@@ -47,64 +49,57 @@
       }
     }
 
-    /* Gift icon + “Click here” text */
+    /* Gift icon + “Click here” text – Desktop/normal */
     .gift-wrapper {
       text-align: center;
       z-index: 2;
     }
     .gift-box {
-      font-size: 12vw;            /* Scale emoji relative to viewport width */
-      max-font-size: 180px;       /* Prevent it from being too large on very wide screens */
+      font-size: 180px;          /* Normal desktop size */
       cursor: pointer;
       animation: wiggle 1.2s infinite ease-in-out;
       user-select: none;
-      margin-bottom: 0.5rem;
+      margin-bottom: 15px;
     }
     @keyframes wiggle {
-      0%, 100%  { transform: rotate(0deg); }
-      25%       { transform: rotate(7deg); }
-      50%       { transform: rotate(-7deg); }
-      75%       { transform: rotate(4deg); }
+      0%, 100% { transform: rotate(0deg); }
+      25%      { transform: rotate(7deg); }
+      50%      { transform: rotate(-7deg); }
+      75%      { transform: rotate(4deg); }
     }
     #clickText {
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       color: #8a2be2;
       font-weight: 600;
       user-select: none;
     }
 
-    /* Message area (hidden until gift is opened) */
+    /* After clicking gift, show this message area – Desktop/normal */
     .message-area {
       display: none;
       flex-direction: row;
       align-items: flex-start;
       justify-content: center;
-      gap: 2rem;
-      margin-top: 2rem;
+      gap: 40px;
+      margin-top: 40px;
       flex-wrap: wrap;
-      width: 90vw;       /* Leave a little padding around on mobile */
-      max-width: 1000px; /* Constrain width on desktop/tablet */
-      z-index: 2;
     }
     .message-area.show {
       display: flex;
     }
 
-    /* Side images */
     .side-image {
-      width: 20vw;       /* Relative to viewport */
-      max-width: 200px;  /* No more than 200px */
+      width: 300px;
       height: auto;
-      border-radius: 1.25rem;
+      border-radius: 20px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
 
-    /* Central message box */
     .message-container {
-      flex: 1 1 300px;   /* Grow and shrink; base at 300px */
+      max-width: 1000px;
       background: white;
-      border-radius: 1.25rem;
-      padding: 2rem;
+      border-radius: 20px;
+      padding: 40px;
       box-shadow: 0 0 20px rgba(255, 192, 203, 0.6);
       text-align: center;
       animation: fadeIn 1s ease forwards;
@@ -119,143 +114,222 @@
         transform: scale(1);
       }
     }
-    .message-container h1 {
+    h1 {
       color: #8a2be2;
-      margin-bottom: 1rem;
+      margin-bottom: 20px;
       font-size: 2rem;
     }
     .message-container p {
-      font-size: 1rem;
-      line-height: 1.5;
+      font-size: 1.2em;
+      line-height: 1.6;
       color: #333;
-      margin-bottom: 1rem;
     }
     .signature {
-      margin-top: 1.5rem;
+      margin-top: 30px;
       font-style: italic;
       color: #999;
-      font-size: 0.9rem;
     }
 
-    /* Redirect button */
-    #redirectBtn {
-      margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
+    /* Next‐button styling (same for all devices) */
+    #nextBtn {
+      margin-top: 25px;
+      padding: 10px 20px;
       font-size: 1rem;
       background-color: #8a2be2;
       color: white;
       border: none;
-      border-radius: 0.5rem;
+      border-radius: 8px;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-    #redirectBtn:hover {
+    #nextBtn:hover {
       transform: scale(1.05);
     }
 
-    /*———— Responsive Adjustments ————*/
-    @media (max-width: 600px) {
-      .gift-box {
-        font-size: 20vw;        /* Bigger relative size on small screens, but not exceeding 180px due to max constraint */
-      }
-      #clickText {
-        font-size: 1rem;
-      }
-      .message-area {
-        flex-direction: column; /* Stack side-images and message container vertically */
-        gap: 1rem;
-        width: 95vw;
-      }
-      .side-image {
-        width: 45vw;            /* More narrow on mobile */
-        max-width: none;        /* Remove desktop max constraint */
-      }
-      .message-container {
-        padding: 1.5rem;
-      }
-      .message-container h1 {
-        font-size: 1.75rem;
-      }
-      .message-container p {
-        font-size: 0.95rem;
-      }
-      #redirectBtn {
-        width: 100%;
-        font-size: 1rem;
-      }
+    /*—————————————————————————————————————————————————————————————————
+      TABLET STYLES (body has .tablet)
+    ——————————————————————————————————————————————————————————————————*/
+    body.tablet {
+      overflow-y: auto; /* allow scrolling on tablet if content overflows */
+    }
+    body.tablet .gift-box {
+      font-size: 14vw;   /* scale relative to viewport width on tablet */
+      max-font-size: 180px;
+    }
+    body.tablet #clickText {
+      font-size: 1.25rem;
+    }
+    body.tablet .message-area {
+      flex-direction: row;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    body.tablet .side-image {
+      width: 45vw;
+      max-width: 300px;
+    }
+    body.tablet h1 {
+      font-size: 2rem;
+    }
+    body.tablet .message-container p {
+      font-size: 1rem;
+    }
+
+    /*—————————————————————————————————————————————————————————————————
+      MOBILE STYLES (body has .mobile)
+      “SMALL VERSION” overrides
+    ——————————————————————————————————————————————————————————————————*/
+    body.mobile {
+      overflow-y: auto;    /* allow vertical scroll */
+    }
+    body.mobile .gift-box {
+      font-size: 18vw;     /* much smaller relative size on phones */
+      max-font-size: 120px;/* limit so it never gets too tiny or huge */
+    }
+    body.mobile #clickText {
+      font-size: 1rem;
+    }
+    body.mobile .message-area {
+      flex-direction: column; 
+      gap: 1rem;
+      margin-top: 2rem;
+      width: 90vw;          /* almost full width on mobile */
+      max-width: none;
+    }
+    body.mobile .side-image {
+      width: 80%;
+      max-width: 250px;
+    }
+    body.mobile .message-container {
+      width: 100%;
+      padding: 20px;
+      max-width: none;
+    }
+    body.mobile h1 {
+      font-size: 1.5rem;   /* smaller heading */
+    }
+    body.mobile .message-container p {
+      font-size: 0.9rem;   /* slightly smaller text */
+    }
+    body.mobile .signature {
+      font-size: 0.8rem;
+    }
+    body.mobile #nextBtn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-
-  <!-- Floating Hearts Layer -->
   <div class="heart-container"></div>
 
-  <!-- Gift Icon (initial view) -->
   <div class="gift-wrapper">
     <div class="gift-box" id="giftBox" title="Click to open your gift!">🎁</div>
     <div id="clickText">Click here!</div>
   </div>
 
-  <!-- Hidden message area, shows once gift is clicked -->
   <div class="message-area" id="messageArea">
     <img src="left.jpeg" alt="Left image" class="side-image" />
     <div class="message-container">
       <h1>Happy Birthday 🦋</h1>
       <p>
-        All days are special for me, but today is extra special because it’s your birthday.  
-        I made this little corner of the web just for you. 💖  
-        I hope you have a day as beautiful as your smile.  
-        May happiness always be in your life. 💘
+        All days are special for me.<br/>
+        But today is extra special because it’s your birthday.<br/>
+        I made this little corner of the web just for you. 💖<br/>
+        I hope you have a day as beautiful as your smile.<br/>
+        Happiness always be in your life. 💘
       </p>
       <p class="signature">From: У.Цэрэн-Өлзий 💌</p>
-      <button id="redirectBtn">Go to Next Page</button>
+      <button id="nextBtn">Next</button>
     </div>
     <img src="right.jpeg" alt="Right image" class="side-image" />
   </div>
 
-  <!-- Background music (plays when gift is opened) -->
+  <!-- Background music -->
   <audio id="bgMusic" src="happy-birthday.mp3" preload="auto"></audio>
 
   <script>
-    /* Floating hearts logic */
-    const heartContainer = document.querySelector('.heart-container');
+    /**
+     * 1) Device‐type detection: returns “Mobile”, “Tablet”, or “Desktop”
+     **/
+    function getDeviceType() {
+      const ua = navigator.userAgent;
+      if (/Mobi|Android/i.test(ua)) {
+        return "Mobile";
+      } else if (/Tablet|iPad/i.test(ua)) {
+        return "Tablet";
+      } else {
+        return "Desktop";
+      }
+    }
 
+    /**
+     * 2) On page load, add the appropriate class to <body>:
+     *    - .mobile for phones
+     *    - .tablet for tablets
+     *    - .desktop for desktops (or none)
+     **/
+    document.addEventListener("DOMContentLoaded", () => {
+      const device = getDeviceType();
+      if (device === "Mobile") {
+        document.body.classList.add("mobile");
+      } else if (device === "Tablet") {
+        document.body.classList.add("tablet");
+      } else {
+        document.body.classList.add("desktop");
+      }
+      console.log("Detected device type:", device);
+    });
+
+    /*———————————————————————————————————————————————————— 
+       3) Floating hearts logic (same as before) 
+    ————————————————————————————————————————————————————*/
+    const heartContainer = document.querySelector(".heart-container");
     function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.textContent = '💜';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.bottom = '0';
-      // Random font-size between 10px and 30px (scaled for screen)
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💜";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.bottom = "0px";
+      // random size between 10px and 30px
       const size = Math.random() * 20 + 10;
-      heart.style.fontSize = size + 'px';
-      // Random animation duration between 4s and 7s
-      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      heart.style.fontSize = size + "px";
+      // animation duration between 4s and 7s
+      heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
       heartContainer.appendChild(heart);
       setTimeout(() => heart.remove(), 7000);
     }
     setInterval(createHeart, 300);
 
-    /* Gift‐opening logic */
-    const giftBox   = document.getElementById('giftBox');
-    const clickText = document.getElementById('clickText');
-    const messageArea = document.getElementById('messageArea');
-    const bgMusic = document.getElementById('bgMusic');
-    const redirectBtn = document.getElementById('redirectBtn');
+    /*———————————————————————————————————————————————————— 
+       4) “Open gift” logic (same as before) 
+    ————————————————————————————————————————————————————*/
+    const giftBox = document.getElementById("giftBox");
+    const clickText = document.getElementById("clickText");
+    const messageArea = document.getElementById("messageArea");
+    const bgMusic = document.getElementById("bgMusic");
+    const nextBtn = document.getElementById("nextBtn");
 
-    giftBox.addEventListener('click', () => {
-      giftBox.style.display = 'none';
-      clickText.style.display = 'none';
-      messageArea.classList.add('show');
+    giftBox.addEventListener("click", () => {
+      giftBox.style.display = "none";
+      clickText.style.display = "none";
+      messageArea.classList.add("show");
       bgMusic.play();
+      // On mobile/tablet, allow vertical scroll to reveal content
+      if (document.body.classList.contains("mobile") ||
+          document.body.classList.contains("tablet")) {
+        document.body.style.overflowY = "auto";
+      }
     });
 
-    /* Redirect to “next page” */
-    redirectBtn.addEventListener('click', () => {
-      window.location.href = 'home.html'; // change this to your actual target file
+    /*———————————————————————————————————————————————————— 
+       5) Next button redirect 
+    ————————————————————————————————————————————————————*/
+    nextBtn.addEventListener("click", () => {
+      // Replace 'next.html' with your actual target page
+      window.location.href = "home.html";
     });
   </script>
-
 </body>
 </html>
