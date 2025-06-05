@@ -6,8 +6,7 @@
   <title>Birthday Gift 🎁💜</title>
   <style>
     /*—————————————————————————————————————————————————————————————————
-      BASE “DESKTOP/NORMAL” STYLES (applies when body has .desktop or no class)
-      Will override further if .mobile or .tablet is present.
+      1) BASE “DESKTOP/NORMAL” STYLES (applies when body has .desktop or no class)
     ——————————————————————————————————————————————————————————————————*/
     body {
       margin: 0;
@@ -23,7 +22,7 @@
       position: relative;
     }
 
-    /* Floating hearts: same for all */
+    /* Floating hearts (all devices) */
     .heart-container {
       position: fixed;
       top: 0; left: 0;
@@ -55,7 +54,7 @@
       z-index: 2;
     }
     .gift-box {
-      font-size: 180px;          /* Normal desktop size */
+      font-size: 180px;          /* Desktop size */
       cursor: pointer;
       animation: wiggle 1.2s infinite ease-in-out;
       user-select: none;
@@ -74,7 +73,7 @@
       user-select: none;
     }
 
-    /* After clicking gift, show this message area – Desktop/normal */
+    /* Message area (hidden until gift is opened) – Desktop/normal */
     .message-area {
       display: none;
       flex-direction: row;
@@ -89,20 +88,21 @@
     }
 
     .side-image {
-      width: 300px;
+      width: 200px;
       height: auto;
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
 
     .message-container {
-      max-width: 1000px;
+      max-width: 600px;
       background: white;
       border-radius: 20px;
       padding: 40px;
       box-shadow: 0 0 20px rgba(255, 192, 203, 0.6);
       text-align: center;
       animation: fadeIn 1s ease forwards;
+      box-sizing: border-box;
     }
     @keyframes fadeIn {
       from {
@@ -114,7 +114,7 @@
         transform: scale(1);
       }
     }
-    h1 {
+    .message-container h1 {
       color: #8a2be2;
       margin-bottom: 20px;
       font-size: 2rem;
@@ -123,16 +123,23 @@
       font-size: 1.2em;
       line-height: 1.6;
       color: #333;
+      margin-bottom: 1rem;
     }
     .signature {
       margin-top: 30px;
       font-style: italic;
       color: #999;
+      font-size: 0.9rem;
     }
 
-    /* Next‐button styling (same for all devices) */
-    #nextBtn {
-      margin-top: 25px;
+    /* Buttons container (all devices) */
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .button-row button {
       padding: 10px 20px;
       font-size: 1rem;
       background-color: #8a2be2;
@@ -142,18 +149,18 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-    #nextBtn:hover {
+    .button-row button:hover {
       transform: scale(1.05);
     }
 
     /*—————————————————————————————————————————————————————————————————
-      TABLET STYLES (body has .tablet)
+      2) TABLET STYLES (body has .tablet)
     ——————————————————————————————————————————————————————————————————*/
     body.tablet {
       overflow-y: auto; /* allow scrolling on tablet if content overflows */
     }
     body.tablet .gift-box {
-      font-size: 14vw;   /* scale relative to viewport width on tablet */
+      font-size: 14vw;   /* relative size on tablet */
       max-font-size: 180px;
     }
     body.tablet #clickText {
@@ -163,28 +170,36 @@
       flex-direction: row;
       gap: 1.5rem;
       margin-top: 2rem;
+      width: 85vw;
+      max-width: 1000px;
     }
     body.tablet .side-image {
       width: 45vw;
       max-width: 300px;
     }
-    body.tablet h1 {
+    body.tablet .message-container h1 {
       font-size: 2rem;
     }
     body.tablet .message-container p {
       font-size: 1rem;
     }
+    body.tablet .button-row {
+      flex-direction: row;
+    }
+    body.tablet .button-row button {
+      width: auto;
+    }
 
     /*—————————————————————————————————————————————————————————————————
-      MOBILE STYLES (body has .mobile)
+      3) MOBILE STYLES (body has .mobile)
       “SMALL VERSION” overrides
     ——————————————————————————————————————————————————————————————————*/
     body.mobile {
-      overflow-y: auto;    /* allow vertical scroll */
+      overflow-y: auto;    /* always allow vertical scroll on phones */
     }
     body.mobile .gift-box {
-      font-size: 18vw;     /* much smaller relative size on phones */
-      max-font-size: 120px;/* limit so it never gets too tiny or huge */
+      font-size: 18vw;     /* smaller relative size on phones */
+      max-font-size: 120px;
     }
     body.mobile #clickText {
       font-size: 1rem;
@@ -199,13 +214,14 @@
     body.mobile .side-image {
       width: 80%;
       max-width: 250px;
+      margin: 0 auto;
     }
     body.mobile .message-container {
       width: 100%;
       padding: 20px;
       max-width: none;
     }
-    body.mobile h1 {
+    body.mobile .message-container h1 {
       font-size: 1.5rem;   /* smaller heading */
     }
     body.mobile .message-container p {
@@ -214,10 +230,12 @@
     body.mobile .signature {
       font-size: 0.8rem;
     }
-    body.mobile #nextBtn {
+    body.mobile .button-row {
+      flex-direction: column; /* stack buttons */
       width: 100%;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
+    }
+    body.mobile .button-row button {
+      width: 100%;
     }
   </style>
 </head>
@@ -241,7 +259,11 @@
         Happiness always be in your life. 💘
       </p>
       <p class="signature">From: У.Цэрэн-Өлзий 💌</p>
-      <button id="nextBtn">Next</button>
+
+      <div class="button-row">
+        <button id="backBtn">Back</button>
+        <button id="nextBtn">Next</button>
+      </div>
     </div>
     <img src="right.jpeg" alt="Right image" class="side-image" />
   </div>
@@ -268,7 +290,7 @@
      * 2) On page load, add the appropriate class to <body>:
      *    - .mobile for phones
      *    - .tablet for tablets
-     *    - .desktop for desktops (or none)
+     *    - .desktop for desktops
      **/
     document.addEventListener("DOMContentLoaded", () => {
       const device = getDeviceType();
@@ -309,26 +331,32 @@
     const clickText = document.getElementById("clickText");
     const messageArea = document.getElementById("messageArea");
     const bgMusic = document.getElementById("bgMusic");
-    const nextBtn = document.getElementById("nextBtn");
 
     giftBox.addEventListener("click", () => {
       giftBox.style.display = "none";
       clickText.style.display = "none";
       messageArea.classList.add("show");
       bgMusic.play();
-      // On mobile/tablet, allow vertical scroll to reveal content
-      if (document.body.classList.contains("mobile") ||
-          document.body.classList.contains("tablet")) {
+      // On mobile/tablet, ensure vertical scroll is enabled
+      if (
+        document.body.classList.contains("mobile") ||
+        document.body.classList.contains("tablet")
+      ) {
         document.body.style.overflowY = "auto";
       }
     });
 
     /*———————————————————————————————————————————————————— 
-       5) Next button redirect 
+       5) Back & Next button handlers 
     ————————————————————————————————————————————————————*/
-    nextBtn.addEventListener("click", () => {
-      // Replace 'next.html' with your actual target page
-      window.location.href = "home.html";
+    document.getElementById("backBtn").addEventListener("click", () => {
+      // Simply reload to show the gift again (you can change this to any URL)
+      location.reload();
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      // Change 'next.html' to your actual target page
+      window.location.href = "next.html";
     });
   </script>
 </body>
